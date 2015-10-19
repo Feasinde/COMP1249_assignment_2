@@ -12,6 +12,6 @@ public class DuplicateISBNException extends Exception{
 
 	//Error message
 	public String getMessage(){
-		return this.message;
+		return super.getMessage();
 	}
 }
