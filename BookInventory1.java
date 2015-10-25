@@ -23,11 +23,18 @@ public class BookInventory1{
 		//display file susize and repeat query
 
 		try{
+
+			//Begin file input with FileReader object
 			FileReader fileReader = new FileReader("Initial_Book_Info.txt");
+
+			//Wrap fileReader with BufferedReader so we can read the file
+			//line by line
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 			//count how many lines the file has to initialise the book array
 			int lines = 0;
+
+			//readLine() is the method that reads the file one line at the time
 			while (bufferedReader.readLine() != null){lines++;}
 			bufferedReader.close();
 
@@ -39,9 +46,13 @@ public class BookInventory1{
 
 			//read file line-by-line and create a book object for each line
 			while((line = bufferedReader.readLine()) != null) {
-				//each line in the file is split using whitespace as delimiter
-				//and each token used as a parameter for the book object
 				Book book = new Book(
+					
+					//each line in the file is split using whitespace as a delimiter
+					//and each token is used as a parameter for the book object
+					
+					//we then use each type's parse<type>() method to convert each 
+					//String fragment into the appropriate type for the Book constructor
 					Long.parseLong(line.split("\\s+")[0]),
 					line.split("\\s+")[1],
 					Integer.parseInt(line.split("\\s+")[2]),
@@ -49,6 +60,8 @@ public class BookInventory1{
 					Double.parseDouble(line.split("\\s+")[4]),
 					Integer.parseInt(line.split("\\s+")[5])
 					);
+				
+
 				BkArray[bookIndex] = book;
 				bookIndex++;
 			}
@@ -60,8 +73,9 @@ public class BookInventory1{
                 "Error reading file '" 
                 + correctedFileName + "'");  
         }
-		//TO DO: read file, determine number of books contained and
-		//define BkArray.
+		//TO DO: Right now, we check the file's length and then proceed to add
+		//objects to BkArray. The assignment specifies that we need a separate
+		//method that does the former.
 
 		//TO DO: a whole lot more…
 
