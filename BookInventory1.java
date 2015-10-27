@@ -3,8 +3,6 @@ import java.util.Scanner;
 
 public class BookInventory1{
 
-	//numberOfLines receives a text file location
-	//and returns how many lines the input file has
 	public static void main(String[] args){
 
 		//number of books in input file
@@ -68,14 +66,13 @@ public class BookInventory1{
                 "Error reading file '" 
                 + correctedFileName + "'");  
         }
-		//TO DO: Right now, we check the file's length and then proceed to add
-		//objects to BkArray. The assignment specifies that we need a separate
-		//method that does the former.
 
 		//TO DO: a whole lot more…
 
 
 	}
+	//numberOfLines receives a text file location
+	//and returns how many lines the input file has
 	private static int numberOfLines(String fileLocation){
 		int lines = 0;
 		try{
