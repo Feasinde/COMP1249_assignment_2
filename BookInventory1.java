@@ -3,6 +3,8 @@ import java.util.Scanner;
 
 public class BookInventory1{
 
+	//numberOfLines receives a text file location
+	//and returns how many lines the input file has
 	public static void main(String[] args){
 
 		//number of books in input file
@@ -31,15 +33,8 @@ public class BookInventory1{
 			//line by line
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-			//count how many lines the file has to initialise the book array
-			int lines = 0;
-
-			//readLine() is the method that reads the file one line at the time
-			while (bufferedReader.readLine() != null){lines++;}
-			bufferedReader.close();
-
 			//initialise array of books
-			Book[] BkArray = new Book[lines];
+			Book[] BkArray = new Book[numberOfLines("Initial_Book_Info.txt")];
 
 			//bookIndex increases as BkArray is populated
 			int bookIndex = 0;
@@ -80,5 +75,29 @@ public class BookInventory1{
 		//TO DO: a whole lot more…
 
 
+	}
+	private static int numberOfLines(String fileLocation){
+		int lines = 0;
+		try{
+				//Begin file input with FileReader object
+				FileReader fileReader = new FileReader(fileLocation);
+
+				//Wrap fileReader with BufferedReader so we can read the file
+				//line by line
+				BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+				//readLine() is the method that reads the file one line at the time
+				while (bufferedReader.readLine() != null){lines++;}
+				bufferedReader.close();
+
+		
+		}
+		catch(IOException ex) {
+
+	        System.out.println(
+	            "Error reading file '" 
+	            + fileLocation + "'");
+	    }
+	    return lines;
 	}
 }
