@@ -33,21 +33,22 @@ public class BookInventory1{
 	//number, and then writes the contents of the array to an
 	//output file
 	public void fixInventory(String inputFileName, String outputFileName){
-
-		try{
-
-			//Begin file input with FileReader object
+		//Begin file input with FileReader object
+		try{	
 			FileReader fileReader = new FileReader("Initial_Book_Info.txt");
 
 			//Wrap fileReader with BufferedReader so we can read the file
 			//line by line
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
+		}
+		catch(IOException e){
+			System.out.println("IO Error: File not found")
+		}
+		//initialise array of books
+		Book[] BkArray = new Book[numberOfLines("Initial_Book_Info.txt")];
 
-			//initialise array of books
-			Book[] BkArray = new Book[numberOfLines("Initial_Book_Info.txt")];
-
-			//bookIndex increases as BkArray is populated
-			int bookIndex = 0;
+		//bookIndex increases as BkArray is populated
+		int bookIndex = 0;
 
 			//read file line-by-line and create a book object for each line
 			while((line = bufferedReader.readLine()) != null) {
@@ -71,18 +72,19 @@ public class BookInventory1{
 				bookIndex++;
 			}
 			bufferedReader.close();
-		}
+		
+    	//enhanced for loop iterates over all Book objects in the
+    	//array 
+    	for(Book book : BkArray){
+    		for(Book comparedBook : BkArray){
+    			if(book.getIsbn() == comparedBook.getIsbn()){
+    				System.out.println("Duplicate ISBN found. ")
+    			}
+    			else{
 
-        catch(IOException ex) {
-            System.out.println(
-                "Error reading file '" 
-                + correctedFileName + "'");  
-        }
-        try{
-        	//enhanced for loop iterates over all Book objects in the
-        	//array 
-        	
-        }
+    			}
+    		}
+    	}
 	}
 
 	//numberOfLines receives a text file location
@@ -96,12 +98,6 @@ public class BookInventory1{
 				//Wrap fileReader with BufferedReader so we can read the file
 				//line by line
 				BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-				//readLine() is the method that reads the file one line at the time
-				while (bufferedReader.readLine() != null){lines++;}
-				bufferedReader.close();
-
-		
 		}
 		catch(IOException ex) {
 
@@ -109,6 +105,12 @@ public class BookInventory1{
 	            "Error reading file '" 
 	            + fileLocation + "'");
 	    }
-	    return lines;
+	    return lines;		
+				//readLine() is the method that reads the file one line at the time
+				while (bufferedReader.readLine() != null){lines++;}
+				bufferedReader.close();
+
+		
+		
 	}
 }
