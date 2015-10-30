@@ -24,5 +24,30 @@ public class Book{
 		this.price = price;
 		this.number_of_pages = number_of_pages;	
 	}
-	
+
+	//What follows is all the accessors and mutaror methods
+	//for each of the class attributes
+
+	public long getIsbn(){
+		return this.isbn;
+	}
+	public void setIsbn(long isbn){
+		this.isbn = isbn;
+	}
+
+	public String getTitle(){
+		return this.title;
+	}
+	public int getIssueYear(){
+		return this.issue_year;
+	}
+	public String getAuthorsName(){
+		return this.authors_name;
+	}
+	public double getPrice(){
+		return this.price;
+	}
+	public int getNumberOfPages(){
+		return this.number_of_pages;
+	}
 }	

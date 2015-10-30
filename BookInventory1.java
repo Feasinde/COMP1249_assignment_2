@@ -16,11 +16,23 @@ public class BookInventory1{
 		//Ask user to name the output file that contains
 		//the corrected ISBN numbers
 		System.out.println("Please enter the name of the corrected catalog file:");
-		correctedFileName = kb.next();
+		outputFileName = kb.next();
 
 		//TO DO: check for existing files of that name. In case
 		//user gives the name of a preexisting file, reject input,
 		//display file susize and repeat query
+
+		
+
+		//TO DO: a whole lot more…
+
+
+	}
+	//fixInventory populates BkArray with objects created using 
+	//the input file, checks for duplicate instances of an ISBN
+	//number, and then writes the contents of the array to an
+	//output file
+	public void fixInventory(String inputFileName, String outputFileName){
 
 		try{
 
@@ -66,11 +78,13 @@ public class BookInventory1{
                 "Error reading file '" 
                 + correctedFileName + "'");  
         }
-
-		//TO DO: a whole lot more…
-
-
+        try{
+        	//enhanced for loop iterates over all Book objects in the
+        	//array 
+        	
+        }
 	}
+
 	//numberOfLines receives a text file location
 	//and returns how many lines the input file has
 	private static int numberOfLines(String fileLocation){
