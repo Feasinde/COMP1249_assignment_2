@@ -54,6 +54,6 @@ public class Book{
 		return Long.toString(this.isbn) + 
 		this.title + Integer.toString(this.issue_year) + 
 		" by " + this.authors_name + ". " + Double.toString(this.price) + 
-		". " + Integer.toString(number_of_pages);
+		". " + Integer.toString(number_of_pages)+"\n";
 	}
 }	
