@@ -27,7 +27,7 @@ public class BookInventory1{
 
 
 	}
-	//fixInventory populates BkArray with objects created using 
+	//fixInventory populates bkArray with objects created using 
 	//the input file, checks for duplicate instances of an ISBN
 	//number, and then writes the contents of the array to an
 	//output file
@@ -37,7 +37,7 @@ public class BookInventory1{
 		String whichBook = null;
 		String line = null;
 
-		Book[] BkArray = new Book[numberOfLines("Initial_Book_Info.txt")];
+		Book[] bkArray = new Book[numberOfLines("Initial_Book_Info.txt")];
 		
 		//Begin file input with FileReader object
 		try{	
@@ -47,7 +47,7 @@ public class BookInventory1{
 			//line by line
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-			//bookIndex increases as BkArray is populated
+			//bookIndex increases as bkArray is populated
 			int bookIndex = 0;
 
 			//read file line-by-line and create a book object for each line
@@ -68,49 +68,68 @@ public class BookInventory1{
 					);
 		
 
-		BkArray[bookIndex] = book;
-		bookIndex++;
-	}
-	bufferedReader.close();
+				bkArray[bookIndex] = book;
+				bookIndex++;
+			}
+			bufferedReader.close();
 		}
 		catch(IOException e){
 			System.out.println("IO Error: File not found");
 		}
-		//initialise array of books
-
 		
     	//enhanced for loop iterates over all Book objects in the
-    	//array 
-    	for(Book book : BkArray){
-    		for(Book comparedBook : BkArray){
+    	//array
+
+    	for(Book book : bkArray){
+    		
+    		Book[] dupISBNbooks = new Book[bkArray.length];
+    		boolean isDuplicate = false;
+    		long duplicateISBN = 0;
+    		int numberOfDuplicates = 0;
+    		
+    		for(Book comparedBook : bkArray){
+    		
     			if(book.getIsbn() == comparedBook.getIsbn()){
-    				System.out.println("Duplicate ISBN found!");
-    				System.out.println("The following two books have the same ISBN:");
-    				System.out.println();
-    				System.out.println(book.toString());
-    				System.out.println("and");
-    				System.out.println(comparedBook.toString() + "\n");
-    				System.out.println("Please select which book needs its ISBN modified (1/2): ");
-    				System.out.println();
-    				System.out.println("1 " + book.getTitle());
-    				System.out.println("2 " + comparedBook.getTitle());
-    				whichBook = input.next();
-    				if(whichBook == "1"){
-    					System.out.println("Please enter the new ISBN for "+ book.getTitle());
-    					long newIsbn = input.nextLong();
-    					book.setIsbn(newIsbn);
-    				}
-    				else if(whichBook == "2"){
-    					System.out.println("Please enter the new ISBN for "+ comparedBook.getTitle());
-    					long newIsbn = input.nextLong(); 
-    					book.setIsbn(newIsbn);
-    				}
-
-
+    				isDuplicate = true;
+    				duplicateISBN = book.getIsbn();
+    				dupISBNbooks[numberOfDuplicates] = comparedBook;
+    				numberOfDuplicates++;
 
     			}
     		}
+    		if(isDuplicate == true){
+    			System.out.println("The ISBN "+duplicateISBN+" was found more than once for the following books: ");
+    			for(Book i : dupISBNbooks){
+    				System.out.println(i.toString());
+    			}
+    			System.out.println();
+
+    			for(Book i : dupISBNbooks){
+    				Scanner kb = new Scanner(System.in);
+
+    				boolean done = false;
+    				while(!done){
+    					try{
+		    				System.out.println("Enter the correct ISBN of "+i.getTitle()	);
+		    				i.setIsbn(kb.nextLong());
+
+		    				for(Book isbnLookup : bkArray){
+		    					if(i.getIsbn() == isbnLookup.getIsbn()){
+			    					throw new DuplicateISBNException("This ISBN is already assigned to another book!");
+			    				}
+						    }
+							done = true;	
+						}
+						catch(DuplicateISBNException sadPotato){
+							String message = sadPotato.getMessage();
+							System.out.println(message);
+						}				    
+				    }		
+    			}
+
+    		}
     	}
+	    
 	}
 
 	//numberOfLines receives a text file location
@@ -141,3 +160,25 @@ public class BookInventory1{
 		
 	}
 }
+
+    				// System.out.println("Duplicate ISBN found!");
+    				// System.out.println("The following two books have the same ISBN:");
+    				// System.out.println();
+    				// System.out.println(book.toString());
+    				// System.out.println("and");
+    				// System.out.println(comparedBook.toString() + "\n");
+    				// System.out.println("Please select which book needs its ISBN modified (1/2): ");
+    				// System.out.println();
+    				// System.out.println("1 " + book.getTitle());
+    				// System.out.println("2 " + comparedBook.getTitle());
+    				// whichBook = input.next();
+    				// if(whichBook == "1"){
+    				// 	System.out.println("Please enter the new ISBN for "+ book.getTitle());
+    				// 	long newIsbn = input.nextLong();
+    				// 	book.setIsbn(newIsbn);
+    				// }
+    				// else if(whichBook == "2"){
+    				// 	System.out.println("Please enter the new ISBN for "+ comparedBook.getTitle());
+    				// 	long newIsbn = input.nextLong(); 
+    				// 	book.setIsbn(newIsbn);
+    				// }
