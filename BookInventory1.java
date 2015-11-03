@@ -82,21 +82,42 @@ public class BookInventory1{
 
     	for(Book book : bkArray){
     		
+    		//for a given book, we must go through the whole array searching for
+    		//duplicate ISBNs
+
+    		//as we find more books with  the same array, we add these to an
+    		//auxiliary aray
     		Book[] dupISBNbooks = new Book[bkArray.length];
+
+    		//in order to trigger the input of the correct ISBNs we need a variable
+    		//that tells us whether a duplicate ISBN was found
     		boolean isDuplicate = false;
+
+    		//the following is a temporary variable that stores the ISBN that currently
+    		//appears on multiple books
     		long duplicateISBN = 0;
+
+    		//the following is a counter that adds up the number of books with the same
+    		//given ISBN
     		int numberOfDuplicates = 0;
     		
+    		//a second enhanced for loop cycles through the book array, comparing
+    		//the current book with all others
     		for(Book comparedBook : bkArray){
     		
     			if(book.getIsbn() == comparedBook.getIsbn()){
     				isDuplicate = true;
     				duplicateISBN = book.getIsbn();
+
+    				//the following line populates the temporary array with all the
+    				//books that currently have the ISBN stored in in the variable
+    				//duplicateISBN
     				dupISBNbooks[numberOfDuplicates] = comparedBook;
     				numberOfDuplicates++;
 
     			}
     		}
+    		//if a duplicate ISBN was found, we begin the process of correcting the ISBNs
     		if(isDuplicate == true){
     			System.out.println("The ISBN "+duplicateISBN+" was found more than once for the following books: ");
     			for(Book i : dupISBNbooks){
