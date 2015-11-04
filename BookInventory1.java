@@ -16,6 +16,7 @@ public class BookInventory1{
 		//the corrected ISBN numbers
 		System.out.println("Please enter the name of the corrected catalog file:");
 		outputFileName = kb.next();
+		fixInventory("Initial_Book_Info.txt",outputFileName);
 
 		//TO DO: check for existing files of that name. In case
 		//user gives the name of a preexisting file, reject input,
@@ -33,52 +34,33 @@ public class BookInventory1{
 	//the input file, checks for duplicate instances of an ISBN
 	//number, and then writes the contents of the array to an
 	//output file
-	public void fixInventory(String inputFileName, String outputFileName){
+	public static void fixInventory(String inputFileName, String outputFileName){
 
 		Scanner input = new Scanner(System.in);
 		String whichBook = null;
 		String line = null;
 
-		Book[] bkArray = new Book[numberOfLines("Initial_Book_Info.txt")];
+		Book[] bkArray = new Book[numberOfLines(inputFileName)];
 		
 		//Begin file input with FileReader object
-		try{	
-			FileReader fileReader = new FileReader("Initial_Book_Info.txt");
-
-			//Wrap fileReader with BufferedReader so we can read the file
-			//line by line
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-			//bookIndex increases as bkArray is populated
-			int bookIndex = 0;
-
-			//read file line-by-line and create a book object for each line
-			while((line = bufferedReader.readLine()) != null) {
-				Book book = new Book(
-
-			//each line in the file is split using whitespace as a delimiter
-			//and each token is used as a parameter for the book object
-			
-			//we then use each type's parse<type>() method to convert each 
-			//String fragment into the appropriate type for the Book constructor
-					Long.parseLong(line.split("\\s+")[0]),
-					line.split("\\s+")[1],
-					Integer.parseInt(line.split("\\s+")[2]),
-					line.split("\\s+")[3],
-					Double.parseDouble(line.split("\\s+")[4]),
-					Integer.parseInt(line.split("\\s+")[5])
-					);
 		
-
-				bkArray[bookIndex] = book;
-				bookIndex++;
-			}
-			bufferedReader.close();
+		Scanner inputStream = null;
+		try{
+			inputStream = new Scanner(new FileInputStream(inputFileName));
 		}
-		catch(IOException e){
-			System.out.println("IO Error: File not found");
+		catch(FileNotFoundException e){
+			System.out.println("File "+inputFileName+" was not found");
+			System.out.println("or could not be opened.");
+			System.exit(0);
 		}
-		
+		for(int i=0; i < bkArray.length; i++){
+			bkArray[i] = new Book(inputStream.nextLong(),inputStream.next(),inputStream.nextInt(),inputStream.next(),inputStream.nextDouble(),inputStream.nextInt());
+			inputStream.nextLine();
+		}
+		System.out.println("This is the array of books: ");
+		for(Book i : bkArray){
+			System.out.println(i);
+		}
     	//enhanced for loop iterates over all Book objects in the
     	//array
 
@@ -89,7 +71,7 @@ public class BookInventory1{
 
     		//as we find more books with  the same array, we add these to an
     		//auxiliary aray
-    		Book[] dupISBNbooks = new Book[bkArray.length];
+    		Book[] dupISBNbooksAlpha = new Book[bkArray.length];
 
     		//in order to trigger the input of the correct ISBNs we need a variable
     		//that tells us whether a duplicate ISBN was found
@@ -114,14 +96,24 @@ public class BookInventory1{
     				//the following line populates the temporary array with all the
     				//books that currently have the ISBN stored in in the variable
     				//duplicateISBN
-    				dupISBNbooks[numberOfDuplicates] = comparedBook;
+    				dupISBNbooksAlpha[numberOfDuplicates] = comparedBook;
     				numberOfDuplicates++;
 
     			}
     		}
+    		Book[] dupISBNbooks = new Book[numberOfDuplicates];
+    		for(int i=0; i < numberOfDuplicates;i++){
+    			dupISBNbooks[i] = dupISBNbooksAlpha[i];
+    		}
+    		
+    		// System.out.println("These are the books with a repeated ISBN: ");
+    		// for(Book i : dupISBNbooks){
+    		// 	System.out.println(i);
+    		// }
+
     		//if a duplicate ISBN was found, we begin the process of correcting the ISBNs
     		if(isDuplicate == true){
-    			System.out.println("The ISBN "+duplicateISBN+" was found more than once for the following books: ");
+    			System.out.println("\nThe ISBN "+duplicateISBN+" was found more than once for the following books: ");
     			
     			//Display which books have the same current ISBN
     			for(Book i : dupISBNbooks){
@@ -154,6 +146,19 @@ public class BookInventory1{
 
     		}
     	}
+    	PrintWriter outputStream = null;
+			try{
+				outputStream = new PrintWriter(new FileOutputStream("/home/feasinde/Documentos/COMP249_assignment_2/"+outputFileName));
+
+			}
+		catch(FileNotFoundException e){
+			System.out.println("Error opening the file stuff.txt.");
+			System.exit(0);
+		}
+		for(Book book : bkArray){
+			outputStream.println(book.toString());
+		}
+		outputStream.close();
 	    
 	}
 

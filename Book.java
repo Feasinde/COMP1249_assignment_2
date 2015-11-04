@@ -51,9 +51,6 @@ public class Book{
 		return this.number_of_pages;
 	}
 	public String toString(){
-		return Long.toString(this.isbn) + 
-		this.title + Integer.toString(this.issue_year) + 
-		" by " + this.authors_name + ". " + Double.toString(this.price) + 
-		". " + Integer.toString(number_of_pages)+"\n";
+		return this.isbn + " "+ this.title +" "+ this.issue_year + " "+ this.authors_name+" "+this.price+" "+this.number_of_pages;
 	}
 }	
