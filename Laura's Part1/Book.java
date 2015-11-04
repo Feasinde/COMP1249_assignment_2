@@ -26,7 +26,7 @@ public class Book {
 		this.numOfPages = numOfPages;
 		this.price = price;
 	}
-	
+	//Accessor and mutators for ISBN, only ISBN have these methods since our program will only use them.
 	public long getIsbn(){
 		return this.isbn;
 	}
@@ -34,32 +34,9 @@ public class Book {
 		this.isbn = isbn;
 	}
 	
-	public String getTitle(){
-		return this.title;
-	}
-	
-	public String getAuthorName(){
-		return this.authorName;
-	}
-	
-	public int getIssueYear(){
-		return this.issueYear;
-	}
-	
-	public int getNumOfPages(){
-		return this.numOfPages;
-	}
-	
-	public double getPrice(){
-		return this.price;
-	}
-	public boolean equals(Book compareIsbn){
-		return (this.isbn==compareIsbn.getIsbn());
-	}
-	
 	public String toString(){
 		return (this.isbn + " " + this.title +" by " + this.authorName +", "
-				+ this.issueYear + ", " + this.price +"$.");
+				+ this.issueYear + ", " + this.price +"$ "+this.numOfPages+".");
 	}
 	
 
