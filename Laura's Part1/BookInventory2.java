@@ -8,12 +8,12 @@ import java.util.Scanner;
 
 
 public class BookInventory2 extends BookInventory1 {
-
+	Scanner keyboard = new Scanner(System.in);
 
 	public static void main(String[] args){
-
 		Scanner inputStream = null;
 		PrintWriter outputStream = null;
+
 
 		//Initializing a new Array of books with corrected ISBNs 
 		Book[] BkArr2 = new Book[NumOfLines(newFileName)];
@@ -61,6 +61,59 @@ public class BookInventory2 extends BookInventory1 {
 
 
 	public void addRecords(String outputFileName){
+		/* I'm going to try to append the data... when I get home....	
+		try {
+		    Files.write(Paths.get(newFileName), linktotext.getBytes(), something.APPEND);
+		}catch (IOException e) {
+
+		}*/
+		PrintWriter outputStream = null;
+
+
+		PrintWriter output = new PrintWriter(outputStream);		
+
+		boolean done = false;
+
+		while (!done) {
+
+			System.out.println("Please enter information for the new book: \n");
+
+			long isbn = 0;
+			String title = null;
+			String authorName = null;
+			int issueYear = 0;
+			int numOfPages = 0;
+			double price = 0;
+
+			System.out.print("ISBN: ");
+			isbn = keyboard.nextLong();
+
+			System.out.print("Title: ");
+			title = keyboard.next();
+
+			System.out.print("Issue Year: ");
+			issueYear = keyboard.nextInt();
+
+			System.out.print("Author names: ");
+			authorName = keyboard.next();
+
+			System.out.print("Price: ");
+			price = keyboard.nextDouble();
+
+			System.out.print("Number of Pages: ");
+			numOfPages = keyboard.nextInt();
+
+
+			output.println(isbn + " " + title + " " + issueYear + " " + authorName + " "
+					+ price + " " + numOfPages);
+
+			System.out.print("\nAdd another book? Enter 'y' for yes: ");
+
+			if (!keyboard.next().equals("y")) {
+				done = true;
+				output.close();	
+			}
+		}
 
 
 	}
@@ -91,13 +144,12 @@ public class BookInventory2 extends BookInventory1 {
 
 	public void binaryBookSearch(Book[] arr, int start, int end, long isbn){
 
-
-
 	}
+
 
 	public void sequentialBookSearch(Book[] arr, int start, int end, long isbn){
 
+
 	}
-}
 
 
