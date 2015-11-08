@@ -3,6 +3,9 @@
 import java.util.Locale;
 import java.io.*;
 import java.util.Scanner;
+import java.util.InputMismatchException;
+
+
 
 public class BookInventory1 {
 
@@ -10,7 +13,7 @@ public class BookInventory1 {
 		
 		Scanner keyboard = new Scanner(System.in);
 		String newFileName = null;
-		//Creates new file name and ensures it isn't already an existing file//
+		//Creates nextw file name and ensures it isn't already an existing file//
 				
 		try{
 			System.out.println("Please enter the name for the updated inventory: ");		
@@ -18,7 +21,7 @@ public class BookInventory1 {
 			File fixedBookInvFile = new File(newFile);			//createNewFile method creates a new file with a given provided it doesn't already exists, if
 				while (!fixedBookInvFile.createNewFile()){	   //it does it will prompt for a new one
 					System.out.println("Error! There is an existing file with the name "+ fixedBookInvFile.getName()+".");
-					System.out.println("That file has a size of "+fixedBookInvFile.length());
+					System.out.println("That file has a size of "+fixedBookInvFile.length()+" bytes.");
 					System.out.println("Please enter another name: ");
 					newFile = keyboard.next();				//Takes string value of the name for the new file, provided it doesn't exist either
 					fixedBookInvFile = new File(newFile);				
@@ -128,14 +131,26 @@ public class BookInventory1 {
 	private static void sortIsbn(Book[] roughBkArr){
 		Scanner keyboard = new Scanner(System.in);
 		boolean uniqueIsbn;		
-		long isSameIsbn;
+		long isSameIsbn = 0;
 			
 			for(int i=0;i<roughBkArr.length; i++){			//Cycle through array in order to find duplicates
 				for (int j=i+1;j<roughBkArr.length; j++){	  						
 					if(roughBkArr[i].getIsbn()==roughBkArr[j].getIsbn()){		//Compare ISBNs, if duplicate found prompt user to enter a new ISBN	
 						System.out.println("Duplicate ISBN "+roughBkArr[j].getIsbn()+" detected in record #"+j+".");
 						System.out.println("Please enter the correct ISBN: ");
-						isSameIsbn=keyboard.nextLong();	//Store new ISBN in temporary variable so that we can test it isn't another duplicate
+						boolean done = false;
+						while(!done){
+							try{
+
+								isSameIsbn=keyboard.nextLong();	//Store new ISBN in temporary variable so that we can test it isn't another duplicate
+								done = true;
+							}
+							catch(Exception e){
+								System.out.println("Invalid input! Please enter a valid ISBN");
+								keyboard.next(); 
+							}
+						}
+						
 						uniqueIsbn = false;			
 						
 						while(!uniqueIsbn){			//Commence a while loop in order to know when an ISBN is not a duplicate
