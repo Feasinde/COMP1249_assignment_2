@@ -1,3 +1,6 @@
+##UPDATE 2015-11-8
+
+On the eve of the deadline, I think we can finally declare Part 1 complete, tested for weird inputs and everything. We're going to use **Laura's code**, that is, all three classes inside the directory called “Laura's part”: ``BookInventory1.java``, ``Book.java``, and ``DuplicateIsbnException.class``.
 
 ##UPDATE 2015-10-25
 
