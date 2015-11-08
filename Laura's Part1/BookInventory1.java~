@@ -1,6 +1,5 @@
 //LAURAS VERSION
 //LAURAS VERSION
-import java.util.Locale;
 import java.io.*;
 import java.util.Scanner;
 
@@ -89,8 +88,7 @@ public class BookInventory1 {
 		//Initializing the Array of books by reading the original file using the scanner class in order to parse the different 
 		//parameters one by one and creating new objects in each index.
 			try{												
-				 inputStream = new Scanner(new FileReader("Initial_Book_Info.txt"));
-						inputStream.useLocale(Locale.US);	
+				 inputStream = new Scanner(new FileReader("Initial_Book_Info.txt"));		
 						for(int i=0;i<BkArr.length; i++){
 								BkArr[i] = new Book(inputStream.nextLong(),inputStream.next(),inputStream.nextInt(),
 												inputStream.next(),inputStream.nextDouble(),inputStream.nextInt());	
