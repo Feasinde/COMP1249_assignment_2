@@ -1,5 +1,4 @@
-//LAURAS VERSION
-//LAURAS VERSION
+
 public class Book {
 	
 	private long isbn;

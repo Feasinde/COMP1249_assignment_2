@@ -1,6 +1,3 @@
-//LAURA VERSION
-//LAURA VERSION
-
 public class DuplicateIsbnException extends Exception {
 	
 	public DuplicateIsbnException(){

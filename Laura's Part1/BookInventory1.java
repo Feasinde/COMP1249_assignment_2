@@ -1,5 +1,17 @@
-//LAURAS VERSION
-//LAURAS VERSION
+//----------------------------------------------------------------------//
+//Assignment 1															//
+//Part 1 - Questions 1-3												//			
+//Written by:															//
+//Laura Elena González 27217323											//
+//Victoria Avgoustis 27529198											//
+//Stevie Gabbay 27490968												//
+//Andrés Lou 24712374													//
+//----------------------------------------------------------------------//
+/*In this program, we take an existing file of a book inventory that contains 
+the books' information, ensure there are no duplicate ISBNs and create a new file 
+that contains this newly sorted information. This is then displayed out to the user
+*/
+
 import java.util.Locale;
 import java.io.*;
 import java.util.Scanner;
