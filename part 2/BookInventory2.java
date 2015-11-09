@@ -14,6 +14,7 @@
 package part2;
 
 import java.io.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class BookInventory2 {
@@ -38,41 +39,82 @@ public class BookInventory2 {
 			System.out.println("File not Found! Program will now exit!");
 			System.exit(0);
 		}
-				
+		
 		//input the information from the file into the array
 		for(int i = 0; i < bkArr.length; i++){
 			bkArr[i] = new Book(arr.nextLong(), arr.next(), arr.nextInt(), arr.next(), arr.nextDouble(), arr.nextInt());		
 		}
 		
 		arr.close();
-		
+
 		//getting the parameters for the searches, and doing them
-		Scanner search = new Scanner(System.in);
-			
-		System.out.println("Enter the starting index: (between 0-" + bkArr.length + ")");
-		int start = search.nextInt();
-		while(start < 0){
-			System.out.println("Invalid! Please enter a valid starting index: (between 0-" + bkArr.length + ")");
-			start = search.nextInt();
-		}
-		System.out.println("Enter the ending index: (between 0-" + bkArr.length + ")");
-		int end = search.nextInt();
-		while(end > bkArr.length - 1){
-			System.out.println("Invalid! Please enter a valid ending index: (between 0-" + bkArr.length + ")");
-			end = search.nextInt();
-		}
-		System.out.println("Enter the isbn:");
-		long isbn = search.nextLong();
+		boolean search = true;
+		do{
+			Scanner kb = new Scanner(System.in);
+			System.out.println();
+			System.out.println("Do you wish to search for a book? (yes or no)");
+			String ans = kb.next();
+			ans = ans.toUpperCase();
+			while(!ans.equals("YES") && !ans.equals("Y") && !ans.equals("NO") && !ans.equals("N")){
+				System.out.println("Invalid Answer! Please enter valid answer! (yes or no)");
+				ans = kb.next();
+				ans = ans.toUpperCase();
+			}
+			if(ans.equals("YES") || ans.equals("Y")){
+				int start = 0;
+				int end = 0;
+				boolean input = false;
+				boolean s = false;
+				boolean e = false;
+				long isbn = 0;
 				
-		//doing a binary search
-		binaryBookSearch(bkArr, start, end, isbn);
+				while(!input){
+					try{						
+						while(!s){
+							System.out.println("Enter the starting index: (between 0-" + (bkArr.length-1) + ")");
+							start = kb.nextInt();
+							while(start < 0 || start > bkArr.length-1){
+								System.out.println("Invalid! Please enter a valid starting index: (between 0-" + (bkArr.length-1) + ")");
+								start = kb.nextInt();
+							}
+							s = true;
+						}
+						while(!e){
+							System.out.println("Enter the ending index: (between 0-" + (bkArr.length-1) + ")");
+							end = kb.nextInt();
+							while(end < start || end > bkArr.length - 1){
+								System.out.println("Invalid! Please enter a valid ending index: (between 0-" + (bkArr.length-1) + ")");
+								end = kb.nextInt();
+							}
+							e = true;
+						}
+						
+						System.out.println("Enter the isbn:");
+						isbn = kb.nextLong();
+						input = true;						
 				
-		//doing a sequential search
-		sequentialBookSearch(bkArr, start, end, isbn);
-			
-		search.close();	
+						//doing a binary search
+						binaryBookSearch(bkArr, start, end, isbn);
+				
+						//doing a sequential search
+						sequentialBookSearch(bkArr, start, end, isbn);
+					}
+					catch(InputMismatchException f){
+							System.out.println("Invalid!");
+							kb.nextLine();
+					}
+				}
+			}
+			else{				
+				System.out.println("You have chosen not to search for a book.");
+				System.out.println();
+				search = false;
+				
+				kb.close();
+			}
+		}
+		while(search);
 		
-			
 		//turning the array into a binary file
 		ObjectOutputStream sortedBinary = null;
 		try{
@@ -101,12 +143,12 @@ public class BookInventory2 {
 		Scanner kb = new Scanner(System.in);
 		PrintWriter add = null;
 		
-		long isbn;
-		String title;
-		int issueYear;
-		String authorName;
-		double price;
-		int numofPages;
+		long isbn = 0;
+		String title = null;
+		int issueYear = 0;
+		String authorName = null;
+		double price = 0.0;
+		int numofPages = 0;
 		String ans;
 		boolean write = true;
 		int counter = 0;
@@ -134,17 +176,82 @@ public class BookInventory2 {
 			}
 			if(ans.equals("YES") || ans.equals("Y")){
 				System.out.println("Please enter the ISBN:");
-				isbn = kb.nextLong();
+				boolean done = false;
+				while(!done){
+					try{
+						isbn = kb.nextLong();
+						done = true;
+					}
+					catch(InputMismatchException e){
+						System.out.println("\nPlease enter a valid ISBN.\n");
+						kb.nextLine();
+					}
+				}
+				
 				System.out.println("Please enter the title:");
-				title = kb.nextLine();
+				done = false;	
+				while(!done){
+					try{
+						title = kb.next();
+						done = true;
+					}
+					catch(InputMismatchException e){
+						System.out.println("\nPlease enter a valid title.\n");
+						kb.nextLine();
+					}
+				}
+				
 				System.out.println("Please enter the issue year:");
-				issueYear = kb.nextInt();
+				done = false;
+				while(!done){
+					try{
+						issueYear = kb.nextInt();
+						done = true;
+					}
+					catch(InputMismatchException e){
+						System.out.println("\nPlease enter a valid issue year.\n");
+						kb.nextLine();
+					}
+				}
+				
 				System.out.println("Please enter the author's name:");
-				authorName = kb.nextLine();
+				done = false;
+				while(!done){
+					try{
+						authorName = kb.next();
+						done = true;
+					}
+					catch(InputMismatchException e){
+						System.out.println("\nPlease enter a valid author's name.\n");
+						kb.nextLine();
+					}
+				}
+				
 				System.out.println("Please enter the price:");
-				price = kb.nextDouble();
+				done = false;
+				while(!done){
+					try{
+						price = kb.nextDouble();
+						done = true;
+					}
+					catch(InputMismatchException e){
+						System.out.println("\nPlease enter a valid price.\n");
+						kb.nextLine();
+					}
+				}
+				
 				System.out.println("Please enter the number of pages:");
-				numofPages = kb.nextInt();
+				done = false;
+				while(!done){
+					try{
+						numofPages = kb.nextInt();
+						done = true;
+					}
+					catch(InputMismatchException e){
+						System.out.println("\nPlease insert a valid number of pages.\n");
+						kb.next();
+					}
+				}
 				
 				add.println(isbn + " " + title + " " + issueYear + " " + authorName + " " + price + " " + numofPages);
 				
@@ -157,7 +264,6 @@ public class BookInventory2 {
 				write = false;
 				
 				add.close();
-				kb.close();
 			}
 		}
 		while(write);
@@ -265,5 +371,5 @@ public class BookInventory2 {
 		
 		return numofRecords;
 	}
-
+	
 }
