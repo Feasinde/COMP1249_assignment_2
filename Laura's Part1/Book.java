@@ -36,7 +36,7 @@ public class Book {
 	
 	public String toString(){
 		return (this.isbn + " " + this.title +" by " + this.authorName +", "
-				+ this.issueYear + ", " + " $"+ this.price + this.numOfPages+".");
+				+ this.issueYear + ", " + " $"+ this.price + ", " + this.numOfPages + " pages");
 	}
 	
 
