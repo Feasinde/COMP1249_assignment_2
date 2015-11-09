@@ -38,76 +38,46 @@ public class BookInventory2 {
 			System.out.println("File not Found! Program will now exit!");
 			System.exit(0);
 		}
-		
-		long isbn = arr.nextLong();
-		String title = arr.next();
-		int issueYear = arr.nextInt();
-		String authorName = arr.next();
-		double price = arr.nextDouble();
-		int numofPages = arr.nextInt();
-		
+				
 		//input the information from the file into the array
-		while(arr.hasNextLine()){
-			int i = 0;
-			bkArr[i] = new Book(isbn, title, issueYear, authorName, price, numofPages);
-			isbn = arr.nextLong();
-			title = arr.next();
-			issueYear = arr.nextInt();
-			authorName = arr.next();
-			price = arr.nextDouble();
-			numofPages = arr.nextInt();
-			i++;
+		for(int i = 0; i < bkArr.length; i++){
+			bkArr[i] = new Book(arr.nextLong(), arr.next(), arr.nextInt(), arr.next(), arr.nextDouble(), arr.nextInt());		
 		}
 		
 		arr.close();
 		
 		//getting the parameters for the searches, and doing them
-		boolean search = true;
-		do{
-			Scanner kb = new Scanner(System.in);
-			System.out.println("Do you wish to search for a book? (yes or no)");
-			String ans = kb.next();
-			ans = ans.toUpperCase();
-			while(!ans.equals("YES") && !ans.equals("Y") && !ans.equals("NO") && !ans.equals("N")){
-				System.out.println("Invalid Answer! Please enter valid answer! (yes or no)");
-				ans = kb.next();
-				ans = ans.toUpperCase();
-			}
-			if(ans.equals("YES") || ans.equals("Y")){
-				System.out.println("Enter the starting index: (between 0-" + bkArr.length + ")");
-				int start = kb.nextInt();
-				while(start < 0){
-					System.out.println("Invalid! Please enter a valid starting index: (between 0-" + bkArr.length + ")");
-					start = kb.nextInt();
-				}
-				System.out.println("Enter the ending index: (between 0-" + bkArr.length + ")");
-				int end = kb.nextInt();
-				while(end > bkArr.length - 1){
-					System.out.println("Invalid! Please enter a valid ending index: (between 0-" + bkArr.length + ")");
-					end = kb.nextInt();
-				}
-				System.out.println("Enter the isbn:");
-				isbn = kb.nextLong();
-				
-				//doing a binary search
-				binaryBookSearch(bkArr, start, end, isbn);
-				
-				//doing a sequential search
-				sequentialBookSearch(bkArr, start, end, isbn);
-			}
-			else{				
-				System.out.println("You have chosen not to search.");
-				System.out.println();
-				search = false;
-				
-				kb.close();
-			}
+		Scanner search = new Scanner(System.in);
+			
+		System.out.println("Enter the starting index: (between 0-" + bkArr.length + ")");
+		int start = search.nextInt();
+		while(start < 0){
+			System.out.println("Invalid! Please enter a valid starting index: (between 0-" + bkArr.length + ")");
+			start = search.nextInt();
 		}
-		while(search);
+		System.out.println("Enter the ending index: (between 0-" + bkArr.length + ")");
+		int end = search.nextInt();
+		while(end > bkArr.length - 1){
+			System.out.println("Invalid! Please enter a valid ending index: (between 0-" + bkArr.length + ")");
+			end = search.nextInt();
+		}
+		System.out.println("Enter the isbn:");
+		long isbn = search.nextLong();
+				
+		//doing a binary search
+		binaryBookSearch(bkArr, start, end, isbn);
+				
+		//doing a sequential search
+		sequentialBookSearch(bkArr, start, end, isbn);
+			
+		search.close();	
 		
+			
 		//turning the array into a binary file
 		ObjectOutputStream sortedBinary = null;
 		try{
+			System.out.println("Putting all the information in a binary file named Books.");
+			
 			sortedBinary = new ObjectOutputStream(new FileOutputStream("Books.dat"));
 			
 			sortedBinary.writeObject(bkArr);
@@ -144,7 +114,6 @@ public class BookInventory2 {
 		//create output stream for the printwriter, and filenotfoundexception
 		try{
 			add = new PrintWriter(new FileOutputStream(sortedFile, true));
-			
 		}
 		
 		catch(FileNotFoundException e){
@@ -190,7 +159,6 @@ public class BookInventory2 {
 				add.close();
 				kb.close();
 			}
-			
 		}
 		while(write);
 	}
@@ -278,22 +246,20 @@ public class BookInventory2 {
 	//counts each line using a bufferedreader to determine how many records are on the file
 	private static int numofRecords(String sortedFile){
 		int numofRecords = 0;
-		BufferedReader filereader;
+		Scanner filereader = null;
 		
 		try{
-			filereader = new BufferedReader(new FileReader(sortedFile));
+			filereader = new Scanner(new FileInputStream(sortedFile));
 			
-			while(filereader.readLine() != null)
+			while(filereader.hasNextLong() && filereader.hasNext() && filereader.hasNextInt() && filereader.hasNext() && filereader.hasNextDouble() && filereader.hasNextInt()){
 				numofRecords++;
-			
+				filereader.nextLine();
+			}
+				
 			filereader.close();
 		}
 		catch(FileNotFoundException e){
 			System.out.println("File not Found! Program will now exit!");
-			System.exit(0);
-		}
-		catch(IOException e){
-			System.out.println("Error! Program will now exit!");
 			System.exit(0);
 		}
 		

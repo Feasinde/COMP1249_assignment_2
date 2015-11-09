@@ -1,155 +1,332 @@
+//-----------------------------------------------------------------------
+//Assignment 2
+//Part 2
+//Written by: Sviki Gabbay - 27490968
+//COMP 249 - Section D
+//1)creates method to add records
+//2)creates method that display the contents of the file
+//3)puts all the information from the file into an array
+//4)does a binary search for an isbn
+//5)does a sequential search for the same isbn
+//6)puts all the array into a binary file
+//-----------------------------------------------------------------------
+
+
 import java.io.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Scanner;
 
+public class BookInventory2 {
 
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 
+		String fileName = "Initial_Book_Info.txt";
 
-public class BookInventory2 extends BookInventory1 {
-	Scanner keyboard = new Scanner(System.in);
+		//runs the methods
+		addRecords(fileName);
+		displayFileContents(fileName);
 
-	public static void main(String[] args){
-		Scanner inputStream = null;
-		PrintWriter outputStream = null;
+		Book[] bkArr = new Book[numofRecords(fileName)];
+		Scanner arr = null;
 
+		//exception if file isn't found
+		try{
+			arr = new Scanner(new FileInputStream(fileName));
+			int i = 0;
 
-		//Initializing a new Array of books with corrected ISBNs 
-		Book[] BkArr2 = new Book[NumOfLines(newFileName)];
+		//input the information from the file into the array
+		while(arr.hasNextLine()){
 
-		//Reading the corrected file using the scanner class in order to parse the different .
-		try{												
-			inputStream = new Scanner(new FileReader(newFileName));		
-			for(int i=0;i<BkArr2.length; i++){
-				BkArr2[i] = new Book(inputStream.nextLong(),inputStream.next(),inputStream.nextInt(),
-						inputStream.next(),inputStream.nextDouble(),inputStream.nextInt());	
-			}
-		}		
-		catch(IOException e){
-			System.out.println("File not found!");
+			long isbn = arr.nextLong();
+			String title = arr.next();
+			int issueYear = arr.nextInt();
+			String authorName = arr.next();
+			double price = arr.nextDouble();
+			int numofPages = arr.nextInt();
+			bkArr[i] = new Book(isbn, title, issueYear, authorName, price, numofPages);
+			i++;
+		}}
+		catch(FileNotFoundException e){
+			System.out.println("File not Found! Program will now exit!");
 			System.exit(0);
 		}
-		// loop that orders the new array in order of increasing ISBN numbers
-		for(int i=0;i<BkArr2.length; i++){
-			for (int j=i+1;j<BkArr2.length; j++){
-				if (BkArr2[i].getIsbn()>BkArr2[j].getIsbn()){
-					BkArr2[i] = BkArr2[j];
+		arr.close();
+
+		//getting the parameters for the searches, and doing them
+		boolean search = true;
+		do{
+			Scanner kb = new Scanner(System.in);
+			System.out.println("Do you wish to search for a book? (yes or no)");
+			String ans = kb.next();
+			ans = ans.toUpperCase();
+			while(!ans.equals("YES") && !ans.equals("Y") && !ans.equals("NO") && !ans.equals("N")){
+				System.out.println("Invalid Answer! Please enter valid answer! (yes or no)");
+				ans = kb.next();
+				ans = ans.toUpperCase();
+			}
+			if(ans.equals("YES") || ans.equals("Y")){
+				System.out.println("Enter the starting index: (between 0-" + bkArr.length + ")");
+				int start = kb.nextInt();
+				while(start < 0){
+					System.out.println("Invalid! Please enter a valid starting index: (between 0-" + bkArr.length + ")");
+					start = kb.nextInt();
 				}
-				else
-					continue;
+				System.out.println("Enter the ending index: (between 0-" + bkArr.length + ")");
+				int end = kb.nextInt();
+				while(end > bkArr.length - 1){
+					System.out.println("Invalid! Please enter a valid ending index: (between 0-" + bkArr.length + ")");
+					end = kb.nextInt();
+				}
+				System.out.println("Enter the isbn:");
+				long isbn = kb.nextLong();
+
+				//doing a binary search
+				binaryBookSearch(bkArr, start, end, isbn);
+
+				//doing a sequential search
+				sequentialBookSearch(bkArr, start, end, isbn);
+			}
+			else{				
+				System.out.println("You have chosen not to search.");
+				System.out.println();
+				search = false;
+
+				kb.close();
 			}
 		}
+		while(search);
 
-		//Here we write to a new  file, which contains all the sorted ISBNs, by using the Print class
-		try{				
-			outputStream = new PrintWriter(new FileOutputStream(newFileName));			
+		//turning the array into a binary file
+		ObjectOutputStream sortedBinary = null;
+		try{
+			sortedBinary = new ObjectOutputStream(new FileOutputStream("Books.dat"));
+
+			sortedBinary.writeObject(bkArr);
+
+			sortedBinary.close();
 		}
-		catch (IOException e){
-			System.out.println("File not found!");
+		catch(FileNotFoundException e){
+			System.out.println("File not Found! Program will now exit!");
+			System.exit(0);
+		} 
+		catch(IOException e){
+			System.out.println("Error! Program will now exit!");
+			System.exit(0);
+		}
+	}
+
+	//gives the option to the user to add records, and adds them to the file
+	public static void addRecords(String sortedFile){
+
+		//create variables and input/output objects
+		Scanner kb = new Scanner(System.in);
+		PrintWriter add = null;
+
+		long isbn = 0;
+		String title = null;
+		int issueYear = 0;
+		String authorName = null;
+		double price = 0;
+		int numofPages = 0;
+		String ans = null;
+		boolean write = true;
+		int counter = 0;
+
+		//create output stream for the printwriter, and filenotfoundexception
+		try{
+			add = new PrintWriter(new FileOutputStream(sortedFile, true));
+
+		}
+
+		catch(FileNotFoundException e){
+			System.out.println("File not Found! Program will now exit!");
 			System.exit(0);
 		}
 
-		for(int i=0;i<BkArr2.length; i++)
-			outputStream.println(BkArr2[i]);
-
-		System.out.println("\nHere are the contents of the file "+newFileName+":");
-		System.out.println("================================================================================\n");	
-		displayFileContents(newFileName);
-	}
-
-
-
-	public void addRecords(String outputFileName){
-		/* I'm going to try to append the data... when I get home....	
-		try {
-		    Files.write(Paths.get(newFileName), linktotext.getBytes(), something.APPEND);
-		}catch (IOException e) {
-
-		}*/
-		PrintWriter outputStream = null;
-
-
-		PrintWriter output = new PrintWriter(outputStream);		
-
-		boolean done = false;
-
-		while (!done) {
-
-			System.out.println("Please enter information for the new book: \n");
-
-			long isbn = 0;
-			String title = null;
-			String authorName = null;
-			int issueYear = 0;
-			int numOfPages = 0;
-			double price = 0;
-
-			System.out.print("ISBN: ");
-			isbn = keyboard.nextLong();
-
-			System.out.print("Title: ");
-			title = keyboard.next();
-
-			System.out.print("Issue Year: ");
-			issueYear = keyboard.nextInt();
-
-			System.out.print("Author names: ");
-			authorName = keyboard.next();
-
-			System.out.print("Price: ");
-			price = keyboard.nextDouble();
-
-			System.out.print("Number of Pages: ");
-			numOfPages = keyboard.nextInt();
-
-
-			output.println(isbn + " " + title + " " + issueYear + " " + authorName + " "
-					+ price + " " + numOfPages);
-
-			System.out.print("\nAdd another book? Enter 'y' for yes: ");
-
-			if (!keyboard.next().equals("y")) {
-				done = true;
-				output.close();	
+		//adds records as long as user responds yes
+		//takes in all the information for the record one by one, then prints it to the file
+		do{
+			System.out.println("Do you wish to enter new book record? (yes or no)");
+			ans = kb.next();
+			ans = ans.toUpperCase();
+			while(!ans.equals("YES") && !ans.equals("Y") && !ans.equals("NO") && !ans.equals("N")){
+				System.out.println("Invalid Answer! Please enter valid answer! (yes or no)");
+				ans = kb.next();
+				ans = ans.toUpperCase();
 			}
+			if(ans.equals("YES") || ans.equals("Y")){
+				System.out.println("Please enter the ISBN:");
+				isbn = kb.nextLong();
+				System.out.println("Please enter the title (seperate words by \"_\"):");
+				title = kb.next();
+				System.out.println("Please enter the issue year:");
+				issueYear = kb.nextInt();
+				System.out.println("Please enter the author's name:(seperate words by \"_\")");
+				authorName = kb.next();
+				System.out.println("Please enter the price:");
+				price = kb.nextDouble();
+				System.out.println("Please enter the number of pages:");
+				numofPages = kb.nextInt();
+
+				add.println(isbn + " " + title + " " + issueYear + " " + authorName + " " + price + " " + numofPages);
+
+				counter++;
+			}
+			else{				
+				System.out.println("You have chosen not to add anymore records.");
+				System.out.println(counter + " records were added to the file.");
+				System.out.println();
+				write = false;
+
+				add.close();
+				kb.close();
+			}
+
 		}
-
-
+		while(write);
 	}
 
-	//method that displays the file contents	
-	public static void displayFileContents(String fileStreamName){
-		BufferedReader inputStream = null;
-		String line;
+	//displays the contents of the file using the bufferedreader
+	public static void displayFileContents(String sortedFile){
+		BufferedReader filereader = null;
 
 		try{
-			inputStream = new BufferedReader(new FileReader(fileStreamName));
+			filereader = new BufferedReader(new FileReader(sortedFile));
 
-			line = inputStream.readLine();
-			while(line != null){				//checks the end of the file
+			String line = filereader.readLine();
+			while(line != null){
 				System.out.println(line);
-				line = inputStream.readLine();
+				line = filereader.readLine();
 			}
-			inputStream.close();			//closes the input stream
+
+			filereader.close();
 		}
-		catch (IOException e){
-			System.out.println("File not found!");
+		catch(FileNotFoundException e){
+			System.out.println("File not Found! Program will now exit!");
+			System.exit(0);
+		}
+		catch(IOException e){
+			System.out.println("Error! Program will now exit!");
+			System.exit(0);
+		}
+	}
+
+	//binary search to find the desired isbn
+	public static void binaryBookSearch(Book[] arr, int start, int end, long isbn){
+
+		int middle;
+		int high = arr.length - 1;
+		int i = 0;
+
+		while(end <= high) {
+			i++;
+
+			middle = (start + end) >>> 1; 
+			if (isbn > arr[middle].getIsbn()){
+				end = middle + 1;
+			} else if (isbn < arr[middle].getIsbn()){
+				high = middle - 1;
+			} else {
+				// found the element
+				System.out.println("Using binary search, we found this book: " + arr[middle]);
+				System.out.println("ISBN found at index: " + i);
+				return;
+			}
+		}
+
+		System.out.println("\nNo book found.");
+		return;
+
+
+
+
+
+
+		/*--------------------------------------------------------------------
+		 * int counter = 0;		
+		int search = (start + end) >>> 1;
+
+		System.out.println("Doing a binary search.");
+
+		if(arr[search].getIsbn() <= isbn){
+			for(int i = search; i <= end; i++){
+				if(arr[i].getIsbn() == isbn){
+					System.out.println("ISBN found at index: " + i);
+					counter++;
+				}
+				else
+					counter++;
+				if(i == end)
+					System.out.println("Did not find ISBN.");
+			}
+		}
+		else{
+			for(int i = search - 1; i >= start; i--){
+				if(arr[i].getIsbn() == isbn){
+					System.out.println("ISBN found at index: " + i);
+					counter++;
+				}
+				else
+					counter++;
+				if(i == start)
+					System.out.println("Did not find ISBN.");
+			}
+		}
+		System.out.println(counter + " iterations of the search performed.");
+		System.out.println();
+		------------------------------------------------------------
+		 */
+	}
+
+	//sequential search to find the desired isbn
+	public static void sequentialBookSearch(Book[] arr, int start, int end, long isbn){
+		int counter = 0;
+
+		System.out.println("Doing a sequential search.");
+
+		for(int i = start; i <= end; i++){
+			if(arr[i].getIsbn() == isbn){
+				System.out.println("ISBN found at index: " + i + "\nUusing a sequential search, we found this book: \n" + arr[i]);
+				counter++;
+				return;
+			}
+			else
+				counter++;
+			if(i == end)
+				System.out.println("Did not find ISBN.");
+		}
+		System.out.println(counter + " iterations of the search performed.");
+		System.out.println();
+	}
+
+	//counts each line using a bufferedreader to determine how many records are on the file
+	private static int numofRecords(String sortedFile){
+		int numofRecords = 0;
+		BufferedReader filereader = null;
+
+
+		try{
+			filereader = new BufferedReader(new FileReader(sortedFile));
+			String line = filereader.readLine();
+
+			while(line != null)
+			{
+				line = filereader.readLine();
+				numofRecords++;
+			}
+
+			filereader.close();
+		}
+		catch(FileNotFoundException e){
+			System.out.println("File not Found! Program will now exit!");
+			System.exit(0);
+		}
+		catch(IOException e){
+			System.out.println("Error! Program will now exit!");
 			System.exit(0);
 		}
 
-
+		return numofRecords;
 	}
 
-
-	public void binaryBookSearch(Book[] arr, int start, int end, long isbn){
-
-	}
-
-
-	public void sequentialBookSearch(Book[] arr, int start, int end, long isbn){
-
-
-	}
-
-
+}
